@@ -1,6 +1,5 @@
 package com.androidace.canvascomposemaster.weightpicker
 
-import android.icu.number.Scale
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,10 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.withRotation
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -22,9 +20,9 @@ import kotlin.math.sin
 fun Scale(
     modifier: Modifier = Modifier,
     style: ScaleStyle = ScaleStyle(),
-    minWeight: Int = 50,
+    minWeight: Int = 20,
     maxWeight: Int = 150,
-    initialWeight: Int = 68,
+    initialWeight: Int = 40,
     onWeightChange: (Int) -> Unit
 ) {
     val radius = style.radius
@@ -61,7 +59,7 @@ fun Scale(
         }
         // Draw lines
         for (i in minWeight..maxWeight) {
-            val angleInRad = (i - initialWeight + angle - 90) * ((PI / 100f).toFloat())
+            val angleInRad = (i - initialWeight + angle - 90) * ((PI / 180f).toFloat())
             val lineType = when {
                 i % 10 == 0 -> LineType.TenStep
                 i % 5 == 0 -> LineType.FiveStep
@@ -94,11 +92,16 @@ fun Scale(
                         (outerRadius - lineLength - 5.dp.toPx() - style.textSize.toPx())
                     val x = textRadius * cos(angleInRad) + circleCenter.x
                     val y = textRadius * sin(angleInRad) + circleCenter.y
-
-                    drawText(abs(i).toString(), x, y, android.graphics.Paint().apply {
-                        textSize = style.textSize.toPx()
-                        textAlign = android.graphics.Paint.Align.CENTER
-                    })
+                    withRotation(
+                        angleInRad * (180f / PI.toFloat()) + 90f,
+                        pivotX = x,
+                        pivotY = y
+                    ) {
+                        drawText(abs(i).toString(), x, y, android.graphics.Paint().apply {
+                            textSize = style.textSize.toPx()
+                            textAlign = android.graphics.Paint.Align.CENTER
+                        })
+                    }
                 }
             }
             drawLine(
