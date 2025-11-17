@@ -1,5 +1,6 @@
 package com.androidace.canvascomposemaster
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +34,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.buildSpannedString
+import com.androidace.canvascomposemaster.clock.ComposeClock
 import com.androidace.canvascomposemaster.ui.theme.CanvasComposeMasterTheme
 import com.androidace.canvascomposemaster.ui.theme.DarkGreen
 import com.androidace.canvascomposemaster.weightpicker.Scale
 import com.androidace.canvascomposemaster.weightpicker.ScaleStyle
+import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -44,52 +48,100 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CanvasComposeMasterTheme {
-                val scaleStyle = ScaleStyle(scaleWidth = 150.dp)
-                val initialWeight = 40
-                var selectedWeight by remember { mutableStateOf(initialWeight) }
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.align(Alignment.TopCenter)
-                        ) {
-                            val weightSpannedString = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 44.sp
-                                    )
-                                ) {
-                                    append("$selectedWeight")
-                                }
-                                withStyle(style = SpanStyle(color = DarkGreen, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)) {
-                                    append(" KG")
-                                }
-                            }
-                            Text("Select your weight", style = MaterialTheme.typography.titleLarge)
-                            Spacer(modifier = Modifier.height(48.dp))
-                            Text(
-                                weightSpannedString
-                            )
-                        }
+                ComposeClockScreen()
+            }
+        }
+    }
+}
 
-                        Scale(
-                            style = scaleStyle,
-                            initialWeight = initialWeight,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(300.dp)
-                                .align(Alignment.BottomCenter)
-                        ) {
-                            selectedWeight = it
-                        }
+@Composable
+fun ComposeClockScreen() {
+    var currentTime by remember { mutableStateOf(Calendar.getInstance()) }
+
+    // Update time every second
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+            currentTime = Calendar.getInstance()
+        }
+    }
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+
+                Text("Compose clock", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(48.dp))
+            }
+
+            ComposeClock(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                currentTime = currentTime
+            )
+        }
+    }
+}
+
+@Composable
+fun ScaleMeasureScreen() {
+    val scaleStyle = ScaleStyle(scaleWidth = 150.dp)
+    val initialWeight = 40
+    var selectedWeight by remember { mutableStateOf(initialWeight) }
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                val weightSpannedString = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 44.sp
+                        )
+                    ) {
+                        append("$selectedWeight")
+                    }
+                    withStyle(
+                        style = SpanStyle(
+                            color = DarkGreen,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    ) {
+                        append(" KG")
                     }
                 }
+                Text("Select your weight", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(48.dp))
+                Text(
+                    weightSpannedString
+                )
+            }
+
+            Scale(
+                style = scaleStyle,
+                initialWeight = initialWeight,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .align(Alignment.BottomCenter)
+            ) {
+                selectedWeight = it
             }
         }
     }

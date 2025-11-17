@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.roundToInt
