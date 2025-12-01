@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.draw
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.SpanStyle
@@ -183,6 +184,36 @@ fun PathAnimation(modifier: Modifier = Modifier) {
                     close()
                 },
                 color = Color.Red
+            )
+        }
+    }
+}
+
+/**
+ * Clipping allows to convert to other shape and change the bounds of one shape when
+ * clipped to another
+ * **/
+
+@Composable
+fun ClipPathSample(modifier: Modifier = Modifier) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val circle = Path().apply {
+            addOval(Rect(center = Offset(400f, 400f), radius = 300f))
+        }
+
+        drawPath(
+            path = circle,
+            color = Color.Black,
+            style = Stroke(width = 5.dp.toPx())
+        )
+
+        clipPath(
+            path = circle
+        ) {
+            drawRect(
+                color = Color.Red,
+                topLeft = Offset(400f, 400f),
+                size = Size(400f, 400f)
             )
         }
     }
