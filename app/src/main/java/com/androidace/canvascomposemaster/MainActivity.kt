@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.buildSpannedString
 import com.androidace.canvascomposemaster.clock.ComposeClock
+import com.androidace.canvascomposemaster.paths.DrawTextOnPath
 import com.androidace.canvascomposemaster.ui.theme.CanvasComposeMasterTheme
 import com.androidace.canvascomposemaster.ui.theme.DarkGreen
 import com.androidace.canvascomposemaster.weightpicker.Scale
@@ -324,7 +325,8 @@ private fun CanvasPathBasicPreview() {
     //CanvasPathBasic()
     //PathOperations()
     //PathAnimation()
-    PathEffectsSample()
+    //PathEffectsSample()
+    DrawTextOnPath()
 }
 
 @Composable
