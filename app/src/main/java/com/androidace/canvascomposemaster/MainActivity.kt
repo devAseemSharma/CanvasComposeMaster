@@ -60,6 +60,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.androidace.canvascomposemaster.clock.ComposeClock
+import com.androidace.canvascomposemaster.genderpicker.GenderPicker
 import com.androidace.canvascomposemaster.paths.DrawTextOnPath
 import com.androidace.canvascomposemaster.ui.theme.CanvasComposeMasterTheme
 import com.androidace.canvascomposemaster.ui.theme.DarkGreen
@@ -79,7 +80,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CanvasComposeMasterTheme {
-                CanvasPathBasic()
+                //CanvasPathBasic()
+                GenderPicker(modifier = Modifier.fillMaxSize()) {
+
+                }
             }
         }
     }
@@ -505,25 +509,26 @@ fun BallClicker(
                 )
             )
         }
-        Canvas(modifier = Modifier
-            .fillMaxSize()
-            .pointerInput(enabled) {
-                if (!enabled) {
-                    return@pointerInput
-                }
-                detectTapGestures {
-                    val distance =
-                        sqrt((it.x - ballPosition.x).pow(2) + (it.y - ballPosition.y).pow(2))
-                    if (distance <= radius) {
-                        ballPosition = randomOffset(
-                            radius = radius,
-                            width = constraints.maxWidth,
-                            height = constraints.maxHeight
-                        )
-                        onBallClick()
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(enabled) {
+                    if (!enabled) {
+                        return@pointerInput
+                    }
+                    detectTapGestures {
+                        val distance =
+                            sqrt((it.x - ballPosition.x).pow(2) + (it.y - ballPosition.y).pow(2))
+                        if (distance <= radius) {
+                            ballPosition = randomOffset(
+                                radius = radius,
+                                width = constraints.maxWidth,
+                                height = constraints.maxHeight
+                            )
+                            onBallClick()
+                        }
                     }
                 }
-            }
         ) {
 
             drawCircle(color = ballColor, radius = radius, center = ballPosition)
