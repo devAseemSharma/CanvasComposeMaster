@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import com.androidace.canvascomposemaster.clock.ComposeClock
 import com.androidace.canvascomposemaster.genderpicker.GenderPicker
 import com.androidace.canvascomposemaster.paths.DrawTextOnPath
+import com.androidace.canvascomposemaster.tictactoe.TicTacToeGame
 import com.androidace.canvascomposemaster.ui.theme.CanvasComposeMasterTheme
 import com.androidace.canvascomposemaster.ui.theme.DarkGreen
 import com.androidace.canvascomposemaster.weightpicker.Scale
@@ -81,9 +82,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             CanvasComposeMasterTheme {
                 //CanvasPathBasic()
-                GenderPicker(modifier = Modifier.fillMaxSize()) {
+                /*GenderPicker(modifier = Modifier.fillMaxSize()) {
 
-                }
+                }*/
+                TicTacToeGame()
             }
         }
     }
