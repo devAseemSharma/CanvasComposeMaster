@@ -1,11 +1,14 @@
 package com.androidace.canvascomposemaster.tictactoe
 
-import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -14,11 +17,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 
 
 /**
@@ -28,6 +33,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TicTacToeGame(modifier: Modifier = Modifier) {
+
+    var animationState: XAnimateState by remember { mutableStateOf(XAnimateState.Start) }
+    var circleAnimateState: OAnimateState by remember { mutableStateOf(OAnimateState.Start) }
+
+    var playerMap = remember {
+        initPlayerMap()
+    }
+
+    var currentPlayer: PlayerType = PlayerType.PlayerX
+
+    var currentRectTapped by remember {
+        mutableStateOf(Rect.Zero)
+    }
+
     var topLeftRect by remember {
         mutableStateOf(Rect.Zero)
     }
@@ -56,7 +75,80 @@ fun TicTacToeGame(modifier: Modifier = Modifier) {
         mutableStateOf(Rect.Zero)
     }
 
+    /***
+     * Board moves played
+     * **/
+
+    var move_1X1 by remember {
+        mutableStateOf(BoardMove())
+    }
+    var move_1X2 by remember {
+        mutableStateOf(BoardMove())
+    }
+    var move_1X3 by remember {
+        mutableStateOf(BoardMove())
+    }
+
+    var move_2X1 by remember {
+        mutableStateOf(BoardMove())
+    }
+    var move_2X2 by remember {
+        mutableStateOf(BoardMove())
+    }
+    var move_2X3 by remember {
+        mutableStateOf(BoardMove())
+    }
+
+    var move_3X1 by remember {
+        mutableStateOf(BoardMove())
+    }
+    var move_3X2 by remember {
+        mutableStateOf(BoardMove())
+    }
+    var move_3X3 by remember {
+        mutableStateOf(BoardMove())
+    }
+
+
+    /**
+     * -------
+     * **/
+
     val context = LocalContext.current
+
+    val progressLineOneX by animateFloatAsState(
+        targetValue = if (animationState >= XAnimateState.LineOneX) 1f else 0f,
+        animationSpec = tween(durationMillis = 800), label = "progressLineOneX"
+    )
+
+    val progressLineTwoX by animateFloatAsState(
+        targetValue = if (animationState >= XAnimateState.LineTwoX) 1f else 0f,
+        animationSpec = tween(durationMillis = 800), label = "progressLineTwoX"
+    )
+
+    val progressO by animateFloatAsState(
+        targetValue = if (circleAnimateState >= OAnimateState.Start) 1f else 0f,
+        animationSpec = tween(durationMillis = 800), label = "progressO"
+    )
+
+
+
+    LaunchedEffect(key1 = move_1X1, move_1X2) {
+        if (currentPlayer == PlayerType.PlayerX) {
+            delay(600)
+            animationState = XAnimateState.LineOneX
+            delay(600)
+            animationState = XAnimateState.LineTwoX
+            animationState = XAnimateState.Done
+        }
+
+        if (currentPlayer == PlayerType.PlayerO) {
+            delay(600)
+            circleAnimateState = OAnimateState.Draw
+            delay(600)
+            circleAnimateState = OAnimateState.Done
+        }
+    }
 
 
     Canvas(
@@ -66,32 +158,100 @@ fun TicTacToeGame(modifier: Modifier = Modifier) {
                 detectTapGestures {
                     when {
                         topLeftRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 1X1 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(topLeftRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(0)
+                            currentRectTapped = topLeftRect
+                            move_1X1 = move_1X1.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         centerTopRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 1X2 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(centerTopRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(1)
+                            currentRectTapped = centerTopRect
+                            move_1X2 = move_1X2.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         topRightRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 1X3 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(topRightRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(2)
+                            currentRectTapped = topRightRect
+                            move_1X3 = move_1X3.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         centerLeftRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 2X1 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(centerLeftRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(3)
+                            currentRectTapped = centerLeftRect
+                            move_2X1 = move_2X1.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         centerRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 2X2 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(centerRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(4)
+                            currentRectTapped = centerRect
+                            move_2X2 = move_2X2.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         centerRightRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 2X3 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(centerRightRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(5)
+                            currentRectTapped = centerRightRect
+                            move_2X3 = move_2X3.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         bottomLeftRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 3X1 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(bottomLeftRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(6)
+                            currentRectTapped = bottomLeftRect
+                            move_3X1 = move_3X1.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         bottomCenterRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 3X2 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(bottomCenterRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(7)
+                            currentRectTapped = bottomCenterRect
+                            move_3X2 = move_3X2.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+
                         bottomRightRect.contains(it) -> {
-                            Toast.makeText(context, "Rect 3X3 clicked", Toast.LENGTH_SHORT).show()
+                            playerMap[currentPlayer]?.playerMoves?.add(bottomRightRect)
+                            playerMap[currentPlayer]?.playerMovePositions?.add(8)
+                            currentRectTapped = bottomRightRect
+                            move_3X3 = move_3X3.copy(
+                                playerType = currentPlayer,
+                                moveType = MoveType.Played
+                            )
                         }
+                    }
+
+                    currentPlayer = if (currentPlayer == PlayerType.PlayerX) {
+                        PlayerType.PlayerO
+                    } else {
+                        PlayerType.PlayerX
                     }
                 }
             }) {
@@ -196,11 +356,31 @@ fun TicTacToeGame(modifier: Modifier = Modifier) {
             size = topLeftRect.size
         )
 
+        if (move_1X1.moveType == MoveType.Played && move_1X1.playerType == PlayerType.PlayerX) {
+            drawPlayerXAttempt(
+                topLeftRect.inflate(-50.dp.toPx()),
+                progressLineOneX,
+                progressLineTwoX
+            )
+        } else if (move_1X1.moveType == MoveType.Played && move_1X1.playerType == PlayerType.PlayerO) {
+            drawPlayerOAttempt(topLeftRect, progressO)
+        }
+
         drawRect(
             color = Color.Transparent,
             topLeft = centerTopRect.topLeft,
             size = centerTopRect.size
         )
+
+        if (move_1X2.moveType == MoveType.Played && move_1X2.playerType == PlayerType.PlayerX) {
+            drawPlayerXAttempt(
+                centerTopRect.inflate(-50.dp.toPx()),
+                progressLineOneX,
+                progressLineTwoX
+            )
+        } else if (move_1X2.moveType == MoveType.Played && move_1X2.playerType == PlayerType.PlayerO) {
+            drawPlayerOAttempt(centerTopRect.inflate(-50.dp.toPx()), progressO)
+        }
 
         drawRect(
             color = Color.Transparent,
@@ -243,7 +423,7 @@ fun TicTacToeGame(modifier: Modifier = Modifier) {
         )
 
         drawRect(
-            color =Color.Transparent,
+            color = Color.Transparent,
             topLeft = bottomRightRect.topLeft,
             size = bottomRightRect.size
         )
@@ -286,11 +466,63 @@ fun TicTacToeGame(modifier: Modifier = Modifier) {
                 strokeWidth = 5.dp.toPx()
             )
         }
-
-        /**
-         * Drow lines for Tic Toc Toe Section ends
-         * **/
-
-
     }
+}
+
+
+fun DrawScope.drawPlayerXAttempt(
+    rect: Rect,
+    animationProgress: Float,
+    animationLineTwoProgress: Float,
+    color: Color = Color.Black
+) {
+    drawLine(
+        color = Color.Red,
+        start = Offset(rect.left, rect.top),
+        end = Offset(
+            x = rect.left + (rect.width * animationProgress),
+            y = rect.top + (rect.height * animationProgress)
+        ),
+        strokeWidth = 8.dp.toPx()
+    )
+
+    drawLine(
+        color = Color.Red,
+        start = Offset(rect.right, rect.top),
+        end = Offset(
+            x = rect.right - (rect.width * animationLineTwoProgress),
+            y = rect.top + (rect.height * animationLineTwoProgress)
+        ),
+        strokeWidth = 8.dp.toPx()
+    )
+
+}
+
+fun DrawScope.drawPlayerOAttempt(
+    rect: Rect,
+    animationProgress: Float
+) {
+    val padding = 16.dp.toPx()
+    val startX = padding
+    val startY = padding
+    val endX = size.width - padding
+    val endY = size.height - padding
+
+    val strokeWidth = 12f
+    drawArc(
+        color = Color.Blue,
+        startAngle = -90f,
+        sweepAngle = 360f * animationProgress, // Animate from 0 to 360
+        useCenter = false,
+        topLeft = rect.topLeft,
+        size = rect.size,
+        style = Stroke(width = strokeWidth)
+    )
+}
+
+fun initPlayerMap(): Map<PlayerType, PlayerMoves> {
+    return mutableStateMapOf(
+        Pair(PlayerType.PlayerX, PlayerMoves(mutableListOf(), mutableListOf())),
+        Pair(PlayerType.PlayerO, PlayerMoves(mutableListOf(), mutableListOf()))
+    )
 }

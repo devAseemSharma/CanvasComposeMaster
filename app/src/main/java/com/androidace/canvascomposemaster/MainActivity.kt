@@ -63,6 +63,8 @@ import com.androidace.canvascomposemaster.clock.ComposeClock
 import com.androidace.canvascomposemaster.genderpicker.GenderPicker
 import com.androidace.canvascomposemaster.paths.DrawTextOnPath
 import com.androidace.canvascomposemaster.tictactoe.TicTacToeGame
+import com.androidace.canvascomposemaster.tictactoe.solution.Player
+import com.androidace.canvascomposemaster.tictactoe.solution.TicTacToe
 import com.androidace.canvascomposemaster.ui.theme.CanvasComposeMasterTheme
 import com.androidace.canvascomposemaster.ui.theme.DarkGreen
 import com.androidace.canvascomposemaster.weightpicker.Scale
@@ -85,7 +87,33 @@ class MainActivity : ComponentActivity() {
                 /*GenderPicker(modifier = Modifier.fillMaxSize()) {
 
                 }*/
-                TicTacToeGame()
+                //TicTacToeGame()
+                var winningPlayer by remember {
+                    mutableStateOf<Player?>(null)
+                }
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TicTacToe(
+                        onNewRound = {
+                            winningPlayer = null
+                        },
+                        onPlayerWin = {
+                            winningPlayer = it
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(50.dp))
+
+                    winningPlayer?.let {
+                        Text(
+                            text = "Player ${it.symbol} has won!",
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }
