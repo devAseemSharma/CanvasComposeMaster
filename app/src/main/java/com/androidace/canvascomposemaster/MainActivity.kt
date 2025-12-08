@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import com.androidace.canvascomposemaster.clock.ComposeClock
 import com.androidace.canvascomposemaster.genderpicker.GenderPicker
 import com.androidace.canvascomposemaster.paths.DrawTextOnPath
+import com.androidace.canvascomposemaster.successanimation.SuccessScreen
 import com.androidace.canvascomposemaster.tictactoe.TicTacToeGame
 import com.androidace.canvascomposemaster.tictactoe.solution.Player
 import com.androidace.canvascomposemaster.tictactoe.solution.TicTacToe
@@ -88,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
                 }*/
                 //TicTacToeGame()
-                var winningPlayer by remember {
+                /*var winningPlayer by remember {
                     mutableStateOf<Player?>(null)
                 }
                 Column(
@@ -113,6 +114,17 @@ class MainActivity : ComponentActivity() {
                             fontWeight = FontWeight.Bold
                         )
                     }
+                }*/
+                var showSuccessScreen by remember {
+                    mutableStateOf(false)
+                }
+
+                LaunchedEffect(true) {
+                    delay(5000)
+                    showSuccessScreen = true
+                }
+                if (showSuccessScreen) {
+                    SuccessScreen()
                 }
             }
         }
