@@ -56,7 +56,7 @@ fun SuccessAnimationWithBurst(
     scaleDuration: Int = 600,
     tickDuration: Int = 800,
     burstDuration: Int = 600,
-    particleCount: Int = 20,
+    particleCount: Int = 50,
     enableSound: Boolean = true,
     soundResourceId: Int? = null // Optional sound resource from raw folder
 ) {
