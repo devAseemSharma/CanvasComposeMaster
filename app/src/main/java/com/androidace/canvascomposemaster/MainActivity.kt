@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.androidace.canvascomposemaster.clock.ComposeClock
 import com.androidace.canvascomposemaster.genderpicker.GenderPicker
+import com.androidace.canvascomposemaster.images.ImageCanvasSample
 import com.androidace.canvascomposemaster.paths.DrawTextOnPath
 import com.androidace.canvascomposemaster.successanimation.SuccessScreen
 import com.androidace.canvascomposemaster.tictactoe.TicTacToeGame
@@ -115,7 +116,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }*/
-                var showSuccessScreen by remember {
+                /*var showSuccessScreen by remember {
                     mutableStateOf(false)
                 }
 
@@ -125,7 +126,9 @@ class MainActivity : ComponentActivity() {
                 }
                 if (showSuccessScreen) {
                     SuccessScreen()
-                }
+                }*/
+
+                ImageCanvasSample()
             }
         }
     }
